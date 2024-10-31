@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model TipoAuto {
+  id     Int     @id @default(autoincrement())
+  tipo   Tipo
+  precio Decimal @db.Decimal(10, 2)
+  auto   auto[]
+
+  @@map("tipo_auto")
+}
+
+model auto {
+  id         Int      @id @default(autoincrement())
+  placa      String   @unique(map: "Auto_placa_key")
+  modelo     String
+  tipoAutoId Int
+  tipo_auto  TipoAuto @relation(fields: [tipoAutoId], references: [id], map: "Auto_tipoAutoId_fkey")
+  cita       cita[]
+
+  @@index([tipoAutoId], map: "Auto_tipoAutoId_fkey")
+}
+
+model cita {
+  id                         Int          @id @default(autoincrement())
+  fecha                      DateTime
+  hora                       DateTime     @db.Time(0)
+  tipoServicioId             Int
+  clienteId                  Int
+  empleadoId                 Int?
+  autoId                     Int
+  estado                     cita_estado  @default(pendiente)
+  createdAt                  DateTime     @default(now())
+  updatedAt                  DateTime
+  auto                       auto         @relation(fields: [autoId], references: [id], map: "Cita_autoId_fkey")
+  user_cita_clienteIdTouser  user         @relation("cita_clienteIdTouser", fields: [clienteId], references: [id], map: "Cita_clienteId_fkey")
+  user_cita_empleadoIdTouser user?        @relation("cita_empleadoIdTouser", fields: [empleadoId], references: [id], map: "Cita_empleadoId_fkey")
+  tiposervicio               tiposervicio @relation(fields: [tipoServicioId], references: [id], map: "Cita_tipoServicioId_fkey")
+
+  @@index([autoId], map: "Cita_autoId_fkey")
+  @@index([clienteId], map: "Cita_clienteId_fkey")
+  @@index([empleadoId], map: "Cita_empleadoId_fkey")
+  @@index([tipoServicioId], map: "Cita_tipoServicioId_fkey")
+}
+
+model tiposervicio {
+  id     Int     @id @default(autoincrement())
+  nombre String
+  precio Decimal @db.Decimal(10, 2)
+  cita   cita[]
+}
+
+model user {
+  id                         Int      @id @default(autoincrement())
+  nombre                     String
+  email                      String   @unique(map: "User_email_key")
+  telefono                   String
+  contrasena                 String?
+  rol                        user_rol @default(cliente)
+  cita_cita_clienteIdTouser  cita[]   @relation("cita_clienteIdTouser")
+  cita_cita_empleadoIdTouser cita[]   @relation("cita_empleadoIdTouser")
+}
+
+enum Tipo {
+  taxi
+  carro
+  camioneta
+}
+
+enum user_rol {
+  cliente
+  admin
+  empleado
+}
+
+enum cita_estado {
+  pendiente
+  confirmada
+  cancelada
+  finalizada
+}
