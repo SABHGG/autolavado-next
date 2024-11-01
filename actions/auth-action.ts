@@ -44,6 +44,18 @@ export const registerAction = async (
       };
     }
 
+    const phone = await db.user.findFirst({
+      where: {
+        telefono: data.telefono,
+      },
+    });
+
+    if (phone) {
+      return {
+        error: "Telefono ya existe",
+      };
+    }
+
     // crear el usuario
 
     const passwordHashed = await bcrypt.hash(data.password, 10);

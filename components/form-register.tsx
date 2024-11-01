@@ -15,12 +15,13 @@ import {
 import { Input } from "@/components/ui/input"
 
 import { registerAction } from '@/actions/auth-action'
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from "sonner"
 
 const FormRegister = () => {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
+
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -33,15 +34,14 @@ const FormRegister = () => {
   })
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
-    setError(null)
     startTransition(async () => {
       const response = await registerAction(values)
-      if (response.error) {
-        setError(response.error)
+      if (response?.error) {
+        toast.error(response.error)
       } else {
-        router.push(`/login`)
+        toast.success("Usuario registrado exitosamente")
+        router.push("/login")
       }
-
     })
   }
 
@@ -102,9 +102,6 @@ const FormRegister = () => {
               </FormItem>
             )}
           />
-          {
-            error && <FormMessage>{error}</FormMessage>
-          }
           <Button type="submit" disabled={isPending}>Submit</Button>
         </form>
       </Form>

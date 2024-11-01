@@ -1,7 +1,7 @@
 import FormLogin from "@/components/form-login"
 const LoginPage = async () => {
   return (
-    <div><FormLogin  /></div>
+    <div><FormLogin /></div>
   )
 }
 

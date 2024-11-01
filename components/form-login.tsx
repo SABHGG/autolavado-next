@@ -16,12 +16,12 @@ import { Input } from "@/components/ui/input"
 
 import { loginAction } from '@/actions/auth-action'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
+import { toast } from "sonner"
 
 
 const FormLogin = () => {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -32,15 +32,14 @@ const FormLogin = () => {
   })
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    setError(null)
     startTransition(async () => {
       const response = await loginAction(values)
       if (response?.error) {
-        setError(response.error)
+        toast.error(response.error)
       } else {
+        toast.success("Inicio de sesión exitoso")
         router.push("/dashboard")
       }
-
     })
   }
 
@@ -75,9 +74,6 @@ const FormLogin = () => {
               </FormItem>
             )}
           />
-          {
-            error && <FormMessage>{error}</FormMessage>
-          }
           <Button type="submit" disabled={isPending}>Submit</Button>
         </form>
       </Form>

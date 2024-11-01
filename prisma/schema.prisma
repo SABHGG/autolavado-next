@@ -60,11 +60,21 @@ model user {
   id                         Int      @id @default(autoincrement())
   nombre                     String
   email                      String   @unique(map: "User_email_key")
-  telefono                   String
+  emailVerified              DateTime?
+  telefono                   String   @unique
   contrasena                 String?
   rol                        user_rol @default(cliente)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @default(now())
   cita_cita_clienteIdTouser  cita[]   @relation("cita_clienteIdTouser")
   cita_cita_empleadoIdTouser cita[]   @relation("cita_empleadoIdTouser")
+}
+
+model VerificationToken {
+  identifier String @unique
+  token      String
+  expires    DateTime
+  @@id([identifier])
 }
 
 enum Tipo {
