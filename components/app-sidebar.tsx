@@ -1,4 +1,5 @@
-import { Calendar, User,ChartColumnIncreasing , LogOut } from "lucide-react"
+"use client"
+import { Calendar, User, ChartColumnIncreasing, LogOut } from "lucide-react"
 import Link from "next/link"
 import {
     Sidebar,
@@ -6,9 +7,11 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
+    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarTrigger,
     useSidebar
 } from "@/components/ui/sidebar"
 import LogoutButton from "@/components/logout-button"
@@ -32,20 +35,33 @@ const items = [
     }
 ]
 
+
 export function AppSidebar() {
-    
+    const { isMobile, setOpenMobile } = useSidebar()
+
+    const handleClick = () => {
+        if (isMobile) {
+            setOpenMobile(false)
+        }
+    }
     return (
-        <Sidebar >
+        <Sidebar>
+            <SidebarHeader className="flex flex-row justify-between">
+                <h2>Admin Panel</h2>
+                {isMobile && (
+                    <SidebarTrigger />
+                )}
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Application</SidebarGroupLabel>
+                    <SidebarGroupLabel>Navigation</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <Link href={item.url}>
-                                            <item.icon />
+                                    <SidebarMenuButton>
+                                        <Link href={item.url} className="flex items-center gap-3" onClick={handleClick}>
+                                            <item.icon className="h-5 w-5" />
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -53,8 +69,8 @@ export function AppSidebar() {
                             ))}
                             <SidebarMenuItem>
                                 <SidebarMenuButton>
-                                    <LogOut />
-                                    <LogoutButton/>
+                                    <LogOut className="mr-2 h-5 w-5" />
+                                    <LogoutButton />
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         </SidebarMenu>
