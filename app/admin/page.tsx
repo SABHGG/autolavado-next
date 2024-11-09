@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { auth } from "@/auth"
-import LogoutButton from "@/components/logout-button"
 
 const page = async () => {
     const session = await auth()
