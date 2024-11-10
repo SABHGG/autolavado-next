@@ -1,4 +1,4 @@
-import { object, string } from "zod";
+import { object, string, z } from "zod";
 
 export const loginSchema = object({
   email: string({ required_error: "El email es requerido" })
@@ -25,3 +25,11 @@ export const registerSchema = object({
     .min(1, "El telefono es requerido")
     .max(10, "El telefono debe tener como máximo 10 caracteres"),
 });
+
+export const userSchema = object({
+  id: z.number(),
+  nombre: z.string(),
+  email: z.string(),
+  telefono: z.string(),
+  rol: z.enum(['cliente', 'admin', 'empleado']),
+})
