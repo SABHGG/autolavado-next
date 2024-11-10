@@ -1,20 +1,7 @@
-import { redirect } from 'next/navigation'
-import { auth } from "@/auth"
-
-const page = async () => {
-    const session = await auth()
-
-    if (!session) {
-        return redirect('/login')
-    }
-    if (session?.user.rol !== 'admin') {
-        return redirect('/dashboard')
-    }
+const page = () => {
     return (
         <div className="container p-2">
-            <div>
-                <pre>{JSON.stringify(session, null, 2)}</pre>
-            </div>
+            <h1>Admin Page</h1>
         </div>
     )
 }
