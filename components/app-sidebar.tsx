@@ -1,5 +1,5 @@
 "use client"
-import { Calendar, User, ChartColumnIncreasing, LogOut } from "lucide-react"
+import { Calendar, User, ChartColumnIncreasing, LogOut, User2, ChevronUp } from "lucide-react"
 import Link from "next/link"
 import {
     Sidebar,
@@ -12,9 +12,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarTrigger,
+    SidebarFooter,
     useSidebar
 } from "@/components/ui/sidebar"
 import LogoutButton from "@/components/logout-button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 // Menu items.
 const items = [
@@ -36,7 +39,7 @@ const items = [
 ]
 
 
-export function AppSidebar() {
+export function AppSidebar({ nombre, email }: { nombre: string | undefined, email: string | undefined }) {
     const { isMobile, setOpenMobile } = useSidebar()
 
     const handleClick = () => {
@@ -46,7 +49,7 @@ export function AppSidebar() {
     }
     return (
         <Sidebar>
-            <SidebarHeader className="flex flex-row justify-between">
+            <SidebarHeader className="flex flex-row justify-between items-center">
                 <h2>Admin Panel</h2>
                 {isMobile && (
                     <SidebarTrigger />
@@ -67,16 +70,50 @@ export function AppSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
-                            <SidebarMenuItem>
-                                <SidebarMenuButton>
-                                    <LogOut className="mr-2 h-5 w-5" />
-                                    <LogoutButton />
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild className="h-auto">
+                                <SidebarMenuButton>
+                                    <Avatar>
+                                        <AvatarImage>
+                                        <User2 />
+                                        </AvatarImage>
+                                        <AvatarFallback>
+                                            <User2 />
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col">
+                                        <span>{nombre}</span>
+                                        <span className="text-xs text-gray-400">{email}</span>
+                                    </div>
+                                    <ChevronUp className="ml-auto" />
+                                </SidebarMenuButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="top"
+                                className="w-[--radix-popper-anchor-width]"
+                            >
+                                <DropdownMenuItem>
+                                    <LogOut className="mr-2 h-5 w-5" />
+                                    <LogoutButton />
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <span>Billing</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <span>Sign out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
     )
 }
