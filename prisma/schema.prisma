@@ -8,9 +8,9 @@ datasource db {
 }
 
 model TipoAuto {
-  id     Int      @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
   tipo   Tipo
-  precio Decimal  @db.Decimal(10, 2)
+  precio Decimal @db.Decimal(10, 2)
   auto   auto[]
 
   @@map("tipo_auto")
@@ -57,23 +57,26 @@ model tiposervicio {
 }
 
 model user {
-  id                         Int      @id @default(autoincrement())
+  id                         Int       @id @default(autoincrement())
   nombre                     String
-  email                      String   @unique(map: "User_email_key")
+  email                      String    @unique(map: "User_email_key")
   emailVerified              DateTime?
-  telefono                   String   @unique
+  telefono                   String    @unique
   contrasena                 String?
-  rol                        user_rol @default(cliente)
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
-  cita_cita_clienteIdTouser  cita[]   @relation("cita_clienteIdTouser")
-  cita_cita_empleadoIdTouser cita[]   @relation("cita_empleadoIdTouser")
+  rol                        user_rol  @default(cliente)
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  cita_cita_clienteIdTouser  cita[]    @relation("cita_clienteIdTouser")
+  cita_cita_empleadoIdTouser cita[]    @relation("cita_empleadoIdTouser")
+
+  @@map("users")
 }
 
 model VerificationToken {
-  identifier String @unique
+  identifier String   @unique
   token      String
   expires    DateTime
+
   @@id([identifier])
 }
 
