@@ -11,7 +11,7 @@ const page = async () => {
         return redirect('/dashboard')
     }
     return (
-        <div className="container">
+        <div className="container p-2">
             <div>
                 <pre>{JSON.stringify(session, null, 2)}</pre>
             </div>

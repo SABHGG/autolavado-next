@@ -8,7 +8,7 @@ const adminLayout = ({
     return (
         <SidebarProvider defaultOpen={true}>
             <AppSidebar />
-            <SidebarTrigger />
+            <SidebarTrigger className="p-2"/>
             {children}
         </SidebarProvider>
     )
