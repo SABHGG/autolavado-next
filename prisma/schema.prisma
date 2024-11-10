@@ -3,14 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model TipoAuto {
-  id     Int     @id @default(autoincrement())
+  id     Int      @id @default(autoincrement())
   tipo   Tipo
-  precio Decimal @db.Decimal(10, 2)
+  precio Decimal  @db.Decimal(10, 2)
   auto   auto[]
 
   @@map("tipo_auto")
@@ -21,10 +21,10 @@ model auto {
   placa      String   @unique(map: "Auto_placa_key")
   modelo     String
   tipoAutoId Int
-  tipo_auto  TipoAuto @relation(fields: [tipoAutoId], references: [id], map: "Auto_tipoAutoId_fkey")
+  tipo_auto  TipoAuto @relation(fields: [tipoAutoId], references: [id], map: "auto_tipoAutoId_fkey")
   cita       cita[]
 
-  @@index([tipoAutoId], map: "Auto_tipoAutoId_fkey")
+  @@index([tipoAutoId], map: "Auto_tipoAutoId_index")
 }
 
 model cita {
@@ -37,11 +37,11 @@ model cita {
   autoId                     Int
   estado                     cita_estado  @default(pendiente)
   createdAt                  DateTime     @default(now())
-  updatedAt                  DateTime
-  auto                       auto         @relation(fields: [autoId], references: [id], map: "Cita_autoId_fkey")
-  user_cita_clienteIdTouser  user         @relation("cita_clienteIdTouser", fields: [clienteId], references: [id], map: "Cita_clienteId_fkey")
-  user_cita_empleadoIdTouser user?        @relation("cita_empleadoIdTouser", fields: [empleadoId], references: [id], map: "Cita_empleadoId_fkey")
-  tiposervicio               tiposervicio @relation(fields: [tipoServicioId], references: [id], map: "Cita_tipoServicioId_fkey")
+  updatedAt                  DateTime     @updatedAt
+  auto                       auto         @relation(fields: [autoId], references: [id], map: "cita_autoId_fkey")
+  user_cita_clienteIdTouser  user         @relation("cita_clienteIdTouser", fields: [clienteId], references: [id], map: "cita_clienteId_fkey")
+  user_cita_empleadoIdTouser user?        @relation("cita_empleadoIdTouser", fields: [empleadoId], references: [id], map: "cita_empleadoId_fkey")
+  tiposervicio               tiposervicio @relation(fields: [tipoServicioId], references: [id], map: "cita_tipoServicioId_fkey")
 
   @@index([autoId], map: "Cita_autoId_fkey")
   @@index([clienteId], map: "Cita_clienteId_fkey")
@@ -65,7 +65,7 @@ model user {
   contrasena                 String?
   rol                        user_rol @default(cliente)
   createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
   cita_cita_clienteIdTouser  cita[]   @relation("cita_clienteIdTouser")
   cita_cita_empleadoIdTouser cita[]   @relation("cita_empleadoIdTouser")
 }
