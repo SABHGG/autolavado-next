@@ -9,6 +9,10 @@ const DashboardPage = async () => {
         return redirect('/login')
     }
 
+    if(session.user.rol === 'empleado') {
+        return redirect('/empleado')
+    }
+
     if(session.user.rol === 'admin') {
         return redirect('/admin')
     }
