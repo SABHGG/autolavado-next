@@ -1,9 +1,10 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { auth } from "@/auth"
 import { redirect } from 'next/navigation'
+import Header from "@/components/header"
 
-const adminLayout = async({
+const adminLayout = async ({
     children,
 }: Readonly<{
     children: React.ReactNode;
@@ -22,9 +23,11 @@ const adminLayout = async({
 
     return (
         <SidebarProvider defaultOpen={true}>
-            <AppSidebar nombre={nombre} email={email}/>
-            <SidebarTrigger className="p-2"/>
-            {children}
+            <AppSidebar nombre={nombre} email={email} />
+            <div>
+                <Header />
+                {children}
+            </div>
         </SidebarProvider>
     )
 }

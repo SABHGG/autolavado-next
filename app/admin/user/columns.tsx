@@ -2,8 +2,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { userSchema } from "@/lib/zod"
 import { z } from "zod"
-import { MoreHorizontal, Trash2, EditIcon } from "lucide-react"
-
+import { MoreHorizontal, Trash2, EditIcon, ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -13,8 +12,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
+import { toast } from "sonner"
+import { deleteUser } from "@/actions/User"
+import { redirect } from "next/navigation"
 type User = z.infer<typeof userSchema>;
+
+const handleClick = async (id: number) => {
+  const user = await deleteUser(id)
+  if (user?.status === 200) {
+    toast.success(user.message)
+    redirect("/admin/user")
+  } else if (user?.status === 400) {
+    toast.error(user.message)
+  } else if (user?.status === 500) {
+    toast.error(user.message)
+  }
+
+}
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -27,7 +41,17 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "telefono",
@@ -35,11 +59,21 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "rol",
-    header: "Rol",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Rol
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     id: "actions",
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -51,14 +85,14 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => alert("Usuario eliminado")}
+              onClick={() => handleClick(row.original.id)}
             >
               <Trash2 />
               Eliminar usuario
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => alert("Usuario editado")}
+              onClick={() => redirect(`/admin/user/edit/${row.original.id}`)}
             >
               <EditIcon />
               Editar usuario

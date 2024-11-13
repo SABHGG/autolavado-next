@@ -1,4 +1,5 @@
-import {db} from "@/lib/db";
+"use server";
+import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/zod";
 import { z } from "zod";
 
@@ -18,14 +19,39 @@ export const getUser = async () => {
 };
 
 export const deleteUser = async (id: number) => {
-  await db.user.delete({
-    where: {
-      id,
-    },
-  });
-}; 
+  try {
+    const user = db.user.findUnique({ where: { id } });
 
-export const uptdateUser = async (id: number, data: User ) => {
+    if (!user) {
+      return {
+        status: 404,
+        message: `Usuario con el id ${id} no encontrado`,
+      };
+    }
+
+    await db.user.delete({
+      where: {
+        id,
+      },
+    });
+
+    return {
+      status: 200,
+      message: `Usuario con el id ${id} eliminado`,
+    };
+
+  } catch (error) {
+    if(error instanceof Error) {
+      return {
+        status: 500,
+        message: `Error al eliminar el usuario con el id ${id}`,
+        error: error.message,
+      };
+    }
+  }
+};
+
+export const uptdateUser = async (id: number, data: User) => {
   await db.user.update({
     where: {
       id,
